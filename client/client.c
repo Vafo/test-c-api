@@ -5,8 +5,13 @@
 int main(int argc, char *argv[])
 {
     struct http serv;
+    char *body = NULL;
+    int body_size = 0;
     http_init(&serv, argv[1], atoi(argv[2]));
-    http_get(&serv, "/", NULL, 0);
+    http_get(&serv, argv[3], &body, &body_size);
+
+    printf("%d\n", body_size);
+    printf("%s", body);
 }
 
 // int main(int argc, char *argv[]){
