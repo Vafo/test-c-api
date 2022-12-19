@@ -12,6 +12,18 @@ int main(int argc, char *argv[])
 
     printf("%d\n", body_size);
     printf("%s", body);
+
+    char post_body[] = "{   \
+	\"username\": \"Vorzakon\", \
+	\"password\": \"123\"       \
+    }";
+
+    char *response_body = NULL;
+    int response_body_size = 0;
+
+    http_post(&serv, "/user/login", post_body, sizeof(post_body), &response_body, &response_body_size);
+    printf("%d\n", response_body_size);
+    printf("%s", response_body);
 }
 
 // int main(int argc, char *argv[]){
