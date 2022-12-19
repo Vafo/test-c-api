@@ -53,7 +53,6 @@ int main(int argc, char *argv[]){
     }
 
     cx = snprintf(inputBuffer, BUFFER_SIZE, "GET %s\r\n", argv[3]);
-//  snprintf(inputBuffer, argv[3], strlen(argv[3]));
 
     write(fd, inputBuffer, cx); // write(fd, char[]*, len);
     bzero(buffer, BUFFER_SIZE);

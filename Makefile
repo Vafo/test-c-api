@@ -1,13 +1,13 @@
 BUILDDIR ?= build
 DEPDIR ?= dep
 
-TARGET_SERVER := server
-SERVER_SRC := server.c
-# EXCLUDE HEADER FILES WITH NO C IMPLEMENTATION
-SERVER_HEADER_SRC := $(filter %.h,$(shell gcc -MM $(SERVER_SRC)))
-SERVER_HEADER_SRC := $(SERVER_HEADER_SRC:.h=.c)
-SERVER_CUSTOM_SRC := 
-SERVER_SRCS := $(SERVER_SRC) $(SERVER_HEADER_SRC) $(SERVER_CUSTOM_SRC)
+# TARGET_SERVER := server
+# SERVER_SRC := server.c
+# # EXCLUDE HEADER FILES WITH NO C IMPLEMENTATION
+# SERVER_HEADER_SRC := $(filter %.h,$(shell gcc -MM $(SERVER_SRC)))
+# SERVER_HEADER_SRC := $(SERVER_HEADER_SRC:.h=.c)
+# SERVER_CUSTOM_SRC := 
+# SERVER_SRCS := $(SERVER_SRC) $(SERVER_HEADER_SRC) $(SERVER_CUSTOM_SRC)
 
 TARGET_CLIENT := client
 CLIENT_SRC := client.c
@@ -22,17 +22,16 @@ DEPS := $(($(SERVER_SRCS) $(CLIENT_SRCS)):.c=.d)
 DEPS := $(addprefix $(DEPDIR)/, $(DEPS))
 
 
-SERVER_OBJS := $(SERVER_SRCS:.c=.o)
-SERVER_OBJS := $(addprefix $(BUILDDIR)/, $(SERVER_OBJS))
+# SERVER_OBJS := $(SERVER_SRCS:.c=.o)
+# SERVER_OBJS := $(addprefix $(BUILDDIR)/, $(SERVER_OBJS))
 CLIENT_OBJS := $(CLIENT_SRCS:.c=.o)
 CLIENT_OBJS := $(addprefix $(BUILDDIR)/, $(CLIENT_OBJS))
 
-abobus:
-	@echo "SERVER SRCS :" $(SERVER_SRCS)
-	@echo "SERVER OBJS :" $(SERVER_OBJS)
-	@echo "CLIENT SRCS :" $(CLIENT_SRCS)
-	@echo "CLIENT OBJS :" $(CLIENT_OBJS)
-
+JSON_C_DIR=/usr/local
+# CFLAGS += -I$(JSON_C_DIR)/include/json-c
+# Or to use lines like: #include <json-c/json_object.h>
+CFLAGS += -I$(JSON_C_DIR)/include
+LDFLAGS+= -L$(JSON_C_DIR)/lib -ljson-c
 
 $(BUILDDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
@@ -42,19 +41,19 @@ $(DEPDIR)/%.d: %.c
 	@mkdir -p $(dir $@)
 	gcc -MM $^ -MT '$(BUILDDIR)/'$(^:.c=.o) -o $@
 
-$(TARGET_SERVER): $(SERVER_OBJS)
-	gcc -o $@ $^
+# $(TARGET_SERVER): $(SERVER_OBJS)
+# 	gcc -o $@ $^
 
 $(TARGET_CLIENT): $(CLIENT_OBJS)
-	gcc -o $@ $^
+	gcc -o $@ $(CFLAGS) $(LDFLAGS)  $^
 
-build_server: $(TARGET_SERVER)
-	@echo "SERVER ABOBUS"
+# build-server: $(TARGET_SERVER)
+# 	@echo "SERVER ABOBUS"
 
-build_client: $(TARGET_CLIENT)
+build: $(TARGET_CLIENT)
 	@echo "CLIENT ABOBUS"
 
 clean:
 	rm -r -f -v $(TARGET_CLIENT) $(TARGET_SERVER) $(DEPDIR) $(BUILDDIR)
 
-.PHONY: build_server build_client clean
+.PHONY: build clean
