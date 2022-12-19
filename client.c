@@ -23,6 +23,11 @@ int socket_connect(char *host, in_port_t port){
     sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char *)&on, sizeof(int));
 
+    struct timeval tv;
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
+
     if(sock == -1){
         perror("setsockopt");
         exit(1);
