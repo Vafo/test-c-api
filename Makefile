@@ -4,8 +4,9 @@ SERVER_DIR = ./server
 CLIENT_DIR = ./client
 PROJ_DIR=$(shell pwd)
 
+JSON_C_DIR=/usr/local
 
-CFLAGS += -I$(JSON_C_DIR)/include -I$(PROJ_DIR)
+CFLAGS += -I$(JSON_C_DIR)/include -I$(JSON_C_DIR)/include/json-c -I$(PROJ_DIR)
 LDFLAGS+= -L$(JSON_C_DIR)/lib -ljson-c
 
 HTTP_SRC += http/http-api.c \
@@ -37,7 +38,6 @@ SERVER_OBJS := $(addprefix $(BUILDDIR)/, $(SERVER_OBJS))
 CLIENT_OBJS := $(CLIENT_SRCS:.c=.o)
 CLIENT_OBJS := $(addprefix $(BUILDDIR)/, $(CLIENT_OBJS))
 
-JSON_C_DIR=/usr/local
 # CFLAGS += -I$(JSON_C_DIR)/include/json-c
 # Or to use lines like: #include <json-c/json_object.h>
 
@@ -45,7 +45,7 @@ JSON_C_DIR=/usr/local
 $(BUILDDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	@echo compiling $@
-	gcc $(CFLAGS) -c $< -o $@ $(LDFLAGS)
+	gcc -c $< -o $@ $(CFLAGS) $(LDFLAGS)
 
 $(DEPDIR)/%.d: %.c
 	@mkdir -p $(dir $@)

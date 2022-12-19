@@ -1,5 +1,8 @@
 #include "http/http-api.h"
 
+#include "json-c/json_object.h"
+#include "json-c/json_tokener.h"
+
 #define BUFFER_SIZE 1024
 
 int main(int argc, char *argv[])
@@ -11,47 +14,26 @@ int main(int argc, char *argv[])
     http_get(&serv, argv[3], &body, &body_size);
 
     printf("%d\n", body_size);
-    printf("%s", body);
+    printf("%s\n\n\n", body);
 
-    char post_body[] = "{   \
-	\"username\": \"Vorzakon\", \
-	\"password\": \"123\"       \
-    }";
+    json_object *jobj = NULL;
+    jobj = json_tokener_parse(body);
 
-    char *response_body = NULL;
-    int response_body_size = 0;
+    char *string = json_object_to_json_string_ext(jobj, JSON_C_TO_STRING_PRETTY);
+    printf("%s", string);
 
-    http_post(&serv, "/user/login", post_body, sizeof(post_body), &response_body, &response_body_size);
-    printf("%d\n", response_body_size);
-    printf("%s", response_body);
+    json_object_put(jobj);
+
+
+    // char post_body[] = "{   \
+	// \"username\": \"Vorzakon\", \
+	// \"password\": \"123\"       \
+    // }";
+
+    // char *response_body = NULL;
+    // int response_body_size = 0;
+
+    // http_post(&serv, "/user/login", post_body, sizeof(post_body), &response_body, &response_body_size);
+    // printf("%d\n", response_body_size);
+    // printf("%s", response_body);
 }
-
-// int main(int argc, char *argv[]){
-//     int fd;
-//     int pos = 0;
-//     char inputBuffer[BUFFER_SIZE];
-//     char buffer[BUFFER_SIZE];
-//     if(argc < 4){
-//         fprintf(stderr, "Usage: %s <hostname> <port> <other-args>\n", argv[0]);
-//         exit(1);
-//     }
-//     fd = user_socket_connect(argv[1], atoi(argv[2]));
-//     if(fd)
-//     {
-//         printf("socket success\n");
-//     }
-
-//     pos += snprintf(inputBuffer + pos, BUFFER_SIZE, "GET %s HTTP/1.0\r\n", argv[3]);
-//     pos += snprintf(inputBuffer + pos, BUFFER_SIZE, "\r\n");
-
-//     write(fd, inputBuffer, pos); // write(fd, char[]*, len);
-//     bzero(buffer, BUFFER_SIZE);
-//     printf("reading response JALAAAAAAAAAAAp\n");
-//     while(read(fd, buffer, BUFFER_SIZE - 1) != 0){
-//         fprintf(stderr, "%s", buffer);
-//         bzero(buffer, BUFFER_SIZE);
-//     }
-//     shutdown(fd, SHUT_RDWR);
-//     close(fd);
-//     return 0;
-// }
