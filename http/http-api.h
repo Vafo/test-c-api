@@ -7,6 +7,7 @@ struct http
 };
 
 int http_init(struct http *dst, char *host, in_port_t port);
-int http_get(struct http *dst, char *route, char **dst_body, unsigned int *buf_size);
+int http_get(struct http *dst, char *route, char *post_body, 
+            unsigned int post_body_size, char **response_body, unsigned int *response_body_size);
 int http_post(struct http *dst, char *route, char *post_body, \
             unsigned int post_body_size, char **dst_response, unsigned int *dst_response_size);
